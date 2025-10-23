@@ -1,0 +1,112 @@
+# ==============================
+# IntelliJ IDEA & JetBrains IDEs
+# ==============================
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/aws.xml
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/gradle.xml
+.idea/**/libraries
+.idea/**/mongoSettings.xml
+.idea/**/sonarlint/
+.idea/**/markdown-navigator*
+.idea/**/azureSettings.xml
+.idea/caches/
+.idea/httpRequests
+.idea/$CACHE_FILE$
+.idea/codestream.xml
+
+# Ignore all module & project files (they can be re-generated)
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+out/
+
+# ==============================
+# Java & Build Artifacts
+# ==============================
+*.class
+*.log
+*.ctxt
+*.tmp
+*.bak
+
+# ==============================
+# Package Files
+# ==============================
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# ==============================
+# JVM Crash Logs
+# ==============================
+hs_err_pid*
+replay_pid*
+
+# ==============================
+# Build Tools (Maven / Gradle)
+# ==============================
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+
+# ==============================
+# Miscellaneous
+# ==============================
+*.DS_Store
+Thumbs.db
+.mtj.tmp/
+.project
+.classpath
+
+# ==============================
+# CMake (if used)
+# ==============================
+cmake-build-*/
+
+# ==============================
+# Logs & Temp folders
+# ==============================
+logs/
+temp/
+tmp/
+
+# ==============================
+# OS specific
+# ==============================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+ehthumbs.db
+Desktop.init
