@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="
+                   http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
+
+    <changeSet id="1-create-parcels" author="dobroznai">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="parcels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="parcels">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"
+                             nullable="false"
+                             primaryKeyName="pk_parcels"/>
+            </column>
+            <!--Unique constraint on the tracking_number column of the parcels table.-->
+            <column name="tracking_number" type="varchar(40)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_parcels_tracking_number"/>
+            </column>
+            <column name="zone_code" type="varchar(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="route_number" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scanned_at" type="timestamp"/>
+            <column name="scanned_by" type="varchar(50)"/>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="bigint"/>
+        </createTable>
+        <!--Index for quick search by zone and route-->
+        <createIndex tableName="parcels" indexName="idx_parcel_zone_route">
+            <column name="zone_code"/>
+            <column name="route_number"/>
+        </createIndex>
+
+
+        <rollback>
+            <dropTable tableName="parcels"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

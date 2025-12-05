@@ -1,7 +1,7 @@
 package idhub.sortinparcels.service;
 
 import idhub.sortinparcels.model.Parcel;
-import idhub.sortinparcels.model.ParcelStatus;
+import idhub.sortinparcels.enums.ParcelStatus;
 import idhub.sortinparcels.repository.ParcelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

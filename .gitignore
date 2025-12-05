@@ -110,3 +110,5 @@ tmp/
 # Windows
 ehthumbs.db
 Desktop.init
+
+!/src/main/resources/application.properties

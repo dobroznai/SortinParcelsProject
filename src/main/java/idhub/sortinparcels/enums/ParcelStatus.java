@@ -1,4 +1,4 @@
-package idhub.sortinparcels.model;
+package idhub.sortinparcels.enums;
 
 public enum ParcelStatus {
     PENDING, SCANNED, DELIVERED

@@ -1,8 +1,11 @@
 package idhub.sortinparcels.model.user;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,7 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 
 public class User {
     @Id
@@ -25,6 +28,8 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
+    @Schema(description = "User role", allowableValues = {"ADMIN", "OPERATOR", "GUEST"})
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
