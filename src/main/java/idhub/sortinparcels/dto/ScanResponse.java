@@ -25,19 +25,27 @@ public class ScanResponse {
     @Schema(description = "User identifier (username or device ID) who scanned the parcel")
     private String scannedBy;
 
-
+    /**
+     * Response when parcel scanned successfully.
+     */
     public static ScanResponse success(String routeNumber) {
         return new ScanResponse("Parcel scanned successfully", routeNumber, null, null);
     }
-
+    /**
+     * Response when scanning failed.
+     */
     public static ScanResponse failure(String reason) {
         return new ScanResponse("Scan failed: " + reason, null, null, null  );
     }
-
+    /**
+     * Response when parcel already scanned previously.
+     */
     public static ScanResponse alreadyScanned(Instant scannedAt, String scannedBy, String routeNumber) {
         return new ScanResponse("Parcel already scanned", routeNumber, scannedAt, scannedBy);
     }
-
+    /**
+     * Response when parcel was already delivered.
+     */
     public static ScanResponse alreadyDelivered() {
         return new ScanResponse("Parcel already delivered", null, null, null);
     }

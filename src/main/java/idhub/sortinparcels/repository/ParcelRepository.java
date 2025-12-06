@@ -7,24 +7,45 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides CRUD operations and domain queries for working with packages
+ * The naming method (derived queries) allows you to perform searches without writing SQL
+ */
 public interface ParcelRepository extends JpaRepository<Parcel, Long> {
-    // Поиск посылки за trackingNumber
-    // SELECT * FROM parcels WHERE trackingNumber = ? LIMIT 1
+
+    /**
+     * Find parcel by unique tracking number used during scanning.
+     * SELECT * FROM parcels WHERE trackingNumber = ? LIMIT 1
+     */
     Optional<Parcel> findByTrackingNumber(String trackingNumber);
 
-    // Получаем посылки по конкретному статусу(PENDING, SCANNED)
+    /**
+     * Get parcels filtered by sorting status (PENDING, SCANNED, DELIVERED).
+     */
     List<Parcel> findByStatus(ParcelStatus status);
 
-    // Получаем все посылки определенного тура
+    /**
+     * Get all parcels assigned to a specific courier route (tour).
+     */
     List<Parcel> findByRouteNumber(String routeNumber);
 
-    // Поиск посылки по зоне и маршруту (оптимизировано под @Index)
-    List <Parcel> findByZoneCodeAndRouteNumber(String zoneCode, String routeNumber);
 
-    // Проверка, существует ли посылка по конкретному trackingNumber
+    /**
+     * Find parcels filtered by zone + route.
+     * Uses database index to speed up scanning operations.
+     * SELECT * FROM parcels WHERE zone_code = ? AND route_number = ?
+     */
+    List<Parcel> findByZoneCodeAndRouteNumber(String zoneCode, String routeNumber);
+
+    /**
+     * Check if parcel exists by tracking number without executing SELECT payload.
+     */
     boolean existsByTrackingNumber(String trackingNumber);
 
-    // Вернуть количество удаленных строк, более безопаснее
+    /**
+     * Mass delete by status — returns deleted rows count.
+     * Safer than void-delete.
+     */
     long deleteByStatus(ParcelStatus status);
 
 }

@@ -1,0 +1,51 @@
+
+/**
+ * @Service
+ * @RequiredArgsConstructor public class ParcelService {
+ * <p>
+ * private final ParcelRepository parcelRepository;
+ * private final ParcelAuditRepository auditRepository;
+ * <p>
+ * // Тимчасове зберігання сесій і відсканованих посилок
+ * private final Map<String, List<String>> scanSessions = new ConcurrentHashMap<>();
+ * @Transactional public ScanResponse scanParcel(String trackingNumber, String scannerId, String sessionId) {
+ * Parcel parcel = parcelRepository.findByTrackingNumber(trackingNumber)
+ * .orElseThrow(() -> new NotFoundException("Parcel not found"));
+ * <p>
+ * // Перевірка статусу посилки
+ * if (parcel.getStatus() == ParcelStatus.SCANNED) {
+ * return ScanResponse.alreadyScanned(parcel.getScannedAt(), parcel.getScannedBy(), parcel.getTourNumber());
+ * }
+ * if (parcel.getStatus() == ParcelStatus.DELIVERED) {
+ * return ScanResponse.alreadyDelivered();
+ * }
+ * <p>
+ * // Оновлюємо посилку
+ * parcel.setStatus(ParcelStatus.SCANNED);
+ * parcel.setScannedAt(Instant.now());
+ * parcel.setScannedBy(scannerId);
+ * parcel.setUpdatedAt(Instant.now());
+ * parcelRepository.save(parcel);
+ * <p>
+ * // Логування аудиту
+ * auditRepository.save(new ParcelAudit(
+ * parcel.getTrackingNumber(),
+ * "SCANNED",
+ * scannerId,
+ * LocalDateTime.now(),
+ * "session:" + sessionId
+ * ));
+ * <p>
+ * // Додаємо посилку до сесії
+ * scanSessions.computeIfAbsent(sessionId, k -> new ArrayList<>()).add(parcel.getTrackingNumber());
+ * <p>
+ * // Повертаємо результат з sessionId (опційно можна додати у ScanResponse)
+ * return ScanResponse.success(parcel.getTourNumber());
+ * }
+ * <p>
+ * // Метод для отримання всіх посилок за сесією
+ * public List<String> getScannedParcelsBySession(String sessionId) {
+ * return scanSessions.getOrDefault(sessionId, Collections.emptyList());
+ * }
+ * }
+ */

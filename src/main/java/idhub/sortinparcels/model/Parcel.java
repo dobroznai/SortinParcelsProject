@@ -24,7 +24,8 @@ import java.time.Instant;
 @Table(name = "parcels",
         // Faster data search in the DB.
         // Index (idx) on the "parcel" table created for quick search by tracking_number columns
-        indexes = {@Index(name = "idx_parcel_tracking_number", columnList = "tracking_number", unique = true)
+        indexes = {@Index(name = "idx_parcel_tracking_number", columnList = "tracking_number", unique = true),
+                @Index(name = "idx_parcel_zone_route", columnList = "zone_code route_number")
         }
 )
 
@@ -41,6 +42,7 @@ public class Parcel {
      */
     @Column(nullable = false, unique = true, name = "tracking_number", length = 40)
     private String trackingNumber;
+
     /**
      * Warehouse sorting zone (cluster of streets handled by a group).
      * <p><b>Example:</b> {@code 80-08}
@@ -49,6 +51,7 @@ public class Parcel {
      */
     @Column(nullable = false, name = "zone_code", length = 5)
     private String zoneCode;
+
     /**
      * Courier delivery route identifier.
      * <p><b>Example:</b> {@code 010}
@@ -56,6 +59,7 @@ public class Parcel {
      */
     @Column(nullable = false, name = "route_number", length = 3)
     private String routeNumber;
+
     /**
      * Current parcel state in the sorting process (Pending, Scanned, Delivered).
      *
@@ -68,11 +72,13 @@ public class Parcel {
     /**
      * Timestamp when parcel was scanned for sorting or delivery.
      */
+    @Column(nullable = false, name = "scanned_at")
     private Instant scannedAt;
 
     /**
      * User identifier (username or device ID) who scanned the parcel.
      */
+    @Column(nullable = false, name = "scanned_by", length = 50)
     private String scannedBy;
 
     /**
@@ -80,12 +86,14 @@ public class Parcel {
      * <p>
      * "Updatable" So that it doesn't get updated accidentally.
      */
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false, name = "created_at")
     private Instant createdAt;
+
 
     /**
      * Last update timestamp applied before update persistence.
      */
+    @Column(nullable = false, name = "updated_at")
     private Instant updatedAt;
 
     /**

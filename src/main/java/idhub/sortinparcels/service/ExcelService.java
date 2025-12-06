@@ -32,18 +32,18 @@ public class ExcelService {
                 if (row.getRowNum() == 0) continue;
 
                 String trackingNumber = getCellValue(row.getCell(0));
-                String gibitNumber = getCellValue(row.getCell(1));
-                String tourNumber = getCellValue(row.getCell(2));
+                String zoneCode = getCellValue(row.getCell(1));
+                String routeNumber = getCellValue(row.getCell(2));
 
-                Parcel parcel = new Parcel(trackingNumber, gibitNumber, tourNumber, ParcelStatus.PENDING);
+                Parcel parcel = new Parcel(trackingNumber, zoneCode, routeNumber, ParcelStatus.PENDING);
                 parcels.add(parcel);
             }
 
             parcelRepository.saveAll(parcels);
-            log.info("✅ Imported {} parcels from Excel", parcels.size());
+            log.info("Imported {} parcels from Excel", parcels.size());
 
         } catch (Exception e) {
-            log.error("❌ Failed to import Excel file", e);
+            log.error("Failed to import Excel file", e);
             throw new RuntimeException("Error reading Excel file", e);
         }
     }
