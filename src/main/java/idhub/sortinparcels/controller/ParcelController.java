@@ -83,7 +83,6 @@ public class ParcelController {
         // can be taken from configuration, properties, or server logic
         return "AUTO-SCANNER-01";
     }
-
     private String getCurrentSessionId() {
         // for example, generate based on date/shift
         return "SHIFT-" + LocalDate.now() + "-AUTO";

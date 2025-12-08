@@ -25,7 +25,7 @@ import java.time.Instant;
         // Faster data search in the DB.
         // Index (idx) on the "parcel" table created for quick search by tracking_number columns
         indexes = {@Index(name = "idx_parcel_tracking_number", columnList = "tracking_number", unique = true),
-                @Index(name = "idx_parcel_zone_route", columnList = "zone_code route_number")
+                @Index(name = "idx_parcel_zone_route", columnList = "zone_code, route_number")
         }
 )
 

@@ -1,4 +1,4 @@
-package idhub.sortinparcels.model.user;
+package idhub.sortinparcels.model;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,12 +13,10 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "app_user")
+@Table(name = "users")
 
 public class User {
     @Id
@@ -28,18 +26,24 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-    @Schema(description = "User role", allowableValues = {"ADMIN", "OPERATOR", "GUEST"})
+    @Schema(description = "User role", allowableValues = {"ADMIN", "USER"})
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    public enum Role {
 
-    public User(Long id, String username, String password, Role role, LocalDateTime createdAt) {
-        this.id = id;
+        USER,
+        ADMIN
+    }
+
+
+    private boolean enabled = true;
+
+    public User(String username, String password, Role role, boolean enabled) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.createdAt = createdAt;
+        this.enabled = enabled;
     }
 }
