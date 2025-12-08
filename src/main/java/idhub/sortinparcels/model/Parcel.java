@@ -67,18 +67,18 @@ public class Parcel {
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ParcelStatus status;
+    private ParcelStatus status = ParcelStatus.PENDING;
 
     /**
      * Timestamp when parcel was scanned for sorting or delivery.
      */
-    @Column(nullable = false, name = "scanned_at")
+    @Column(name = "scanned_at")
     private Instant scannedAt;
 
     /**
      * User identifier (username or device ID) who scanned the parcel.
      */
-    @Column(nullable = false, name = "scanned_by", length = 50)
+    @Column(name = "scanned_by", length = 50)
     private String scannedBy;
 
     /**
@@ -86,14 +86,14 @@ public class Parcel {
      * <p>
      * "Updatable" So that it doesn't get updated accidentally.
      */
-    @Column(nullable = false, updatable = false, name = "created_at")
+    @Column(updatable = false, name = "created_at")
     private Instant createdAt;
 
 
     /**
      * Last update timestamp applied before update persistence.
      */
-    @Column(nullable = false, name = "updated_at")
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     /**

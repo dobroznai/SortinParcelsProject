@@ -32,17 +32,18 @@ public class ScanResponse {
         return new ScanResponse("Parcel scanned successfully", routeNumber, null, null);
     }
     /**
-     * Response when scanning failed.
-     */
-    public static ScanResponse failure(String reason) {
-        return new ScanResponse("Scan failed: " + reason, null, null, null  );
-    }
-    /**
      * Response when parcel already scanned previously.
      */
     public static ScanResponse alreadyScanned(Instant scannedAt, String scannedBy, String routeNumber) {
         return new ScanResponse("Parcel already scanned", routeNumber, scannedAt, scannedBy);
     }
+    /**
+     * Response when scanning failed.
+     */
+    public static ScanResponse failure(String reason) {
+        return new ScanResponse("Scan failed: " + reason, null, null, null  );
+    }
+
     /**
      * Response when parcel was already delivered.
      */

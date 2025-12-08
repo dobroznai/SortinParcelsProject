@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="
+                   http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
+
+    <changeSet id="2-create-parcel-audit" author="dobroznai">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="parcel_audit"/>
+            </not>
+        </preConditions>
+        <createTable tableName="parcel_audit">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"
+                             nullable="false"
+                             primaryKeyName="pk_parcels_audit"/>
+            </column>
+            <column name="tracking_number" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scanned_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scanned_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="parcel_audit"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

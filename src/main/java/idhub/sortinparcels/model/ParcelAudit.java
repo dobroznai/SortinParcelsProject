@@ -1,5 +1,6 @@
 package idhub.sortinparcels.model;
 
+
 import idhub.sortinparcels.enums.AuditEventType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Entity
@@ -41,11 +42,15 @@ public class ParcelAudit {
     @Column(nullable = false)
     private String sessionId;
 
-    public ParcelAudit(String trackingNumber, AuditEventType event, String scannedBy, Instant scannedAt, String sessionId) {
+    @Column(nullable = false)
+    private String message;
+
+    public ParcelAudit(String trackingNumber, AuditEventType event, String scannedBy, Instant scannedAt, String sessionId, String message) {
         this.trackingNumber = trackingNumber;
         this.event = event;
         this.scannedBy = scannedBy;
         this.scannedAt = scannedAt;
         this.sessionId = sessionId;
+        this.message = message;
     }
 }

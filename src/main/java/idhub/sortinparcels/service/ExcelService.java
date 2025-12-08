@@ -1,8 +1,6 @@
 package idhub.sortinparcels.service;
 
-import idhub.sortinparcels.model.Parcel;
-import idhub.sortinparcels.enums.ParcelStatus;
-import idhub.sortinparcels.repository.ParcelRepository;
+import idhub.sortinparcels.dto.ParcelExcelDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -18,41 +16,67 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExcelService {
 
-    private final ParcelRepository parcelRepository;
+    /**
+     * Reads the given Excel file and converts each row into ParcelExcelDto.
+     * Skips the first row (header).
+     *
+     * @param file uploaded Excel file (.xlsx/.xls)
+     * @return list of parsed DTOs
+     */
+    public List<ParcelExcelDto> parseExcel(MultipartFile file) {
+        List<ParcelExcelDto> inputList = new ArrayList<>();
 
-    public void importParcels(MultipartFile file) {
         try (InputStream is = file.getInputStream();
              Workbook workbook = WorkbookFactory.create(is)) {
 
             Sheet sheet = workbook.getSheetAt(0);
-            List<Parcel> parcels = new ArrayList<>();
 
             for (Row row : sheet) {
-                // Пропустити перший рядок (заголовки)
+                // Skip the header row
                 if (row.getRowNum() == 0) continue;
 
-                String trackingNumber = getCellValue(row.getCell(0));
-                String zoneCode = getCellValue(row.getCell(1));
-                String routeNumber = getCellValue(row.getCell(2));
+                String trackingNumber = getCellValue(row.getCell(0)).trim();
+                // Skip empty rows
+                if (trackingNumber.isBlank()) {
+                    log.warn("Skipping row {} because tracking number is blank", row.getRowNum());
+                    continue;
+                }
+                String zoneCode = getCellValue(row.getCell(1)).trim();
 
-                Parcel parcel = new Parcel(trackingNumber, zoneCode, routeNumber, ParcelStatus.PENDING);
-                parcels.add(parcel);
+                if (zoneCode.isBlank()) {
+                    log.warn("Skipping row {} because zoneCode is blank", row.getRowNum());
+                    continue;
+                }
+                String routeNumber = getCellValue(row.getCell(2)).trim();
+                if (routeNumber.isBlank()) {
+                    log.warn("Skipping row {} because routeNumber is blank", row.getRowNum());
+                    continue;
+                }
+
+
+                inputList.add(new ParcelExcelDto(
+                        trackingNumber,
+                        zoneCode,
+                        routeNumber));
             }
 
-            parcelRepository.saveAll(parcels);
-            log.info("Imported {} parcels from Excel", parcels.size());
-
+            log.info("Parsed {} parcels from Excel", inputList.size());
         } catch (Exception e) {
-            log.error("Failed to import Excel file", e);
+            log.error("Failed to parse Excel file", e);
             throw new RuntimeException("Error reading Excel file", e);
         }
+
+        return inputList;
     }
 
+    /**
+     * Utility to convert cell value into String
+     */
     private String getCellValue(Cell cell) {
         if (cell == null) return "";
         return switch (cell.getCellType()) {
-            case STRING -> cell.getStringCellValue();
-            case NUMERIC -> String.valueOf((long) cell.getNumericCellValue());
+            case STRING -> cell.getStringCellValue().trim();
+            case NUMERIC -> String.valueOf((long) cell.getNumericCellValue()).trim();
             default -> "";
         };
     }

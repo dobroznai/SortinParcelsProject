@@ -1,5 +1,6 @@
 package idhub.sortinparcels.repository;
 
+import idhub.sortinparcels.enums.AuditEventType;
 import idhub.sortinparcels.model.ParcelAudit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -27,9 +28,8 @@ public interface ParcelAuditRepository extends JpaRepository<ParcelAudit, Long> 
      */
     List<ParcelAudit> findBySessionId(String sessionId);
 
-
     /**
      * Filter events by type for a specific parcel
      */
-    List<ParcelAudit> findByTrackingNumberAndEventOrderByScannedAtDesc(String trackingNumber, idhub.sortinparcels.enums.AuditEventType event);
+    List<ParcelAudit> findByTrackingNumberAndEventOrderByScannedAtDesc(String trackingNumber, AuditEventType event);
 }

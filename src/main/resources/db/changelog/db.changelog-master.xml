@@ -6,6 +6,7 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
 
     <include file="db.changelog-1.0-create-parcels.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-2.0-create-parcel-audit.xml" relativeToChangelogFile="true"/>
 
 
 </databaseChangeLog>

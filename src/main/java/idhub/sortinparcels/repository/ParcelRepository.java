@@ -3,6 +3,7 @@ package idhub.sortinparcels.repository;
 import idhub.sortinparcels.model.Parcel;
 import idhub.sortinparcels.enums.ParcelStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,13 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
      * Get parcels filtered by sorting status (PENDING, SCANNED, DELIVERED).
      */
     List<Parcel> findByStatus(ParcelStatus status);
+
+    /**
+     * Get only tracking numbers without loading full Parcel entity.
+     * Used for fast duplicate validation on Excel import.
+     */
+    @Query("SELECT p.trackingNumber FROM Parcel p")
+    List<String> findAllTrackingNumbers();
 
     /**
      * Get all parcels assigned to a specific courier route (tour).

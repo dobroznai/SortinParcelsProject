@@ -30,20 +30,20 @@
             <column name="route_number" type="varchar(3)">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="varchar(20)">
-                <constraints nullable="false"/>
+            <column name="status" type="varchar(20)" defaultValue="PENDING">
+
             </column>
-            <column name="scanned_at" type="timestamp">
-                <constraints nullable="false"/>
+            <column name="scanned_at" type="timestamp with time zone">
+
             </column>
             <column name="scanned_by" type="varchar(50)">
-                <constraints nullable="false"/>
+
             </column>
-            <column name="created_at" type="timestamp">
-                <constraints nullable="false"/>
+            <column name="created_at" type="timestamp with time zone">
+
             </column>
-            <column name="updated_at" type="timestamp">
-                <constraints nullable="false"/>
+            <column name="updated_at" type="timestamp with time zone">
+
             </column>
             <column name="version" type="bigint"/>
         </createTable>
