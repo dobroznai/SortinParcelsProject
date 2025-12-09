@@ -1,6 +1,7 @@
 package idhub.sortinparcels.model;
 
 
+import idhub.sortinparcels.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,12 +31,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    public enum Role {
-
-        USER,
-        ADMIN
-    }
 
 
     private boolean enabled = true;

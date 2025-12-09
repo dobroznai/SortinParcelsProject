@@ -29,7 +29,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
     // Генерація токена
-    public String generateToken(SortinParcelsUserDetails userDetails) {
+    public String generateToken(SortinParcelsSecurityUser userDetails) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtExpirationMs);
         User.Role role = userDetails.getRole();

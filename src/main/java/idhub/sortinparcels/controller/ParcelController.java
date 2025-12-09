@@ -1,11 +1,11 @@
 package idhub.sortinparcels.controller;
 
-import idhub.sortinparcels.dto.ParcelExcelDto;
+import idhub.sortinparcels.dto.ParcelReaderDto;
 import idhub.sortinparcels.dto.ScanResponse;
 import idhub.sortinparcels.model.Parcel;
 import idhub.sortinparcels.enums.ParcelStatus;
 
-import idhub.sortinparcels.service.ExcelService;
+import idhub.sortinparcels.service.ExcelReader;
 import idhub.sortinparcels.service.ParcelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParcelController {
 
-    private final ExcelService excelService;
+    private final ExcelReader excelReader;
     private final ParcelService parcelService;
 
     @Operation(summary = "Upload parcels via Excel file",
@@ -39,7 +39,7 @@ public class ParcelController {
     })
     @PostMapping("/upload")
     public ResponseEntity<String> uploadParcels(@RequestParam("file") MultipartFile file) {
-        List<ParcelExcelDto> inputList = excelService.parseExcel(file);
+        List<ParcelReaderDto> inputList = excelReader.read(file);
         int importedCount = parcelService.importParcelsFromDto(inputList);
         return ResponseEntity.ok("Successfully uploaded " + importedCount + " parcels");
     }

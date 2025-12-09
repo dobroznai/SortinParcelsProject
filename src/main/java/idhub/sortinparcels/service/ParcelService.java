@@ -1,7 +1,7 @@
 package idhub.sortinparcels.service;
 
 import idhub.sortinparcels.dto.AuditEvent;
-import idhub.sortinparcels.dto.ParcelExcelDto;
+import idhub.sortinparcels.dto.ParcelReaderDto;
 import idhub.sortinparcels.dto.ScanResponse;
 import idhub.sortinparcels.enums.ParcelStatus;
 import idhub.sortinparcels.exceptions.ParcelNotFoundException;
@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service layer responsible for processing parcel scanning operations
@@ -40,24 +42,25 @@ public class ParcelService {
     private final ParcelAuditRepository auditRepository;
 
     @Transactional
-    public int importParcelsFromDto(List<ParcelExcelDto> dtoList) {
+    public int importParcelsFromDto(List<ParcelReaderDto> dtoList) {
 
-        // 1) Отримуємо усі існуючі трекінг-номери одним SQL
-        List<String> existing = parcelRepository.findAllTrackingNumbers();
+        // 1. Отримуємо всі існуючі трекінг-номери в Set для O(1) перевірок
+        // .contains() на List - existing.contains(dto.getTrackingNumber()) — це O(N) на кожну перевірку.
+        Set<String> existing = new HashSet<>(parcelRepository.findAllTrackingNumbers());
 
         // 2) Фільтруємо дублі як з БД, так і дублікати у самому Excel
         List<Parcel> newParcels = dtoList.stream()
-                .distinct() // захист від дубля в Excel
-                .filter(dto -> !existing.contains(dto.getTrackingNumber()))
+                .distinct() // захист від дубля в файлі
+                .filter(dto -> !existing.contains(dto.getTrackingNumber())) // дублікати з БД
                 .map(dto -> new Parcel(
                         dto.getTrackingNumber(),
                         dto.getZoneCode(),
                         dto.getRouteNumber(),
-                        ParcelStatus.PENDING))
+                        ParcelStatus.PENDING
+                ))
                 .toList();
 
         parcelRepository.saveAll(newParcels);
-        parcelRepository.flush(); //Скидає всі зміни, що очікують на внесення, до бази даних.
         return newParcels.size();
     }
 

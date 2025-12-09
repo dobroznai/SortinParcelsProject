@@ -7,7 +7,7 @@ import idhub.sortinparcels.auth.LoginRequest;
 import idhub.sortinparcels.model.User;
 import idhub.sortinparcels.repository.SortinParcelsUserRepository;
 import idhub.sortinparcels.security.JwtService;
-import idhub.sortinparcels.security.SortinParcelsUserDetails;
+import idhub.sortinparcels.security.SortinParcelsSecurityUser;
 import idhub.sortinparcels.service.SortinParcelsUserDetailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,7 +48,7 @@ public class AuthController {
 
         UserDetails userDetails = userDetailService.loadUserByUsername(loginRequest.getUsername());
 
-        String token = jwtService.generateToken((SortinParcelsUserDetails) userDetails);
+        String token = jwtService.generateToken((SortinParcelsSecurityUser) userDetails);
 
         User.Role role = jwtService.extractRole(token);
 

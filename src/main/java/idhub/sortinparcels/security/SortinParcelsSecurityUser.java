@@ -8,10 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class SortinParcelsUserDetails implements UserDetails {
+public class SortinParcelsSecurityUser implements UserDetails {
     private final User user;
 
-    public SortinParcelsUserDetails(User user) {
+    public SortinParcelsSecurityUser(User user) {
         this.user = user;
     }
 
@@ -33,9 +33,7 @@ public class SortinParcelsUserDetails implements UserDetails {
     }
 
 
-    public User.Role getRole() {
-        return user.getRole();
-    }
+
 
     @Override
     public boolean isEnabled() {

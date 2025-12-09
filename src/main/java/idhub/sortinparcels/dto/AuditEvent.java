@@ -53,7 +53,7 @@ public class AuditEvent {
      */
     public static AuditEvent successScan(Parcel parcel, String scannedBy, String sessionId) {
         return new AuditEvent(
-                "Parcel " + parcel.getTrackingNumber() + " scanned successfully.",
+                "Parcel scanned successfully - " + parcel.getTrackingNumber(),
                 parcel.getTrackingNumber(),
                 AuditEventType.SCANNED,
                 scannedBy,
@@ -71,7 +71,7 @@ public class AuditEvent {
      */
     public static AuditEvent repeatedScan(Parcel parcel, String scannedBy, String sessionId) {
         return new AuditEvent(
-                "Parcel " + parcel.getTrackingNumber() + " scanned successfully.",
+                "The parcel has already been scanned - " + parcel.getTrackingNumber(),
                 parcel.getTrackingNumber(),
                 AuditEventType.REPEATED_SCAN,
                 scannedBy,

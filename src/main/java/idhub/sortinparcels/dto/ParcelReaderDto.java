@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode //for .distinct()
-public class ParcelExcelDto {
+public class ParcelReaderDto {
 
     private String trackingNumber;
     @Pattern(regexp = "\\d{2}-\\d{2}", message = "Zone format must be NN-NN")

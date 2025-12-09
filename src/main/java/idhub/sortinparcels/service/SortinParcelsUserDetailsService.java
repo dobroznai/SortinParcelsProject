@@ -3,18 +3,18 @@ package idhub.sortinparcels.service;
 
 import idhub.sortinparcels.model.User;
 import idhub.sortinparcels.repository.SortinParcelsUserRepository;
-import idhub.sortinparcels.security.SortinParcelsUserDetails;
+import idhub.sortinparcels.security.SortinParcelsSecurityUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SortinParcelsUserDetailService implements UserDetailsService {
+public class SortinParcelsUserDetailsService implements UserDetailsService {
 
     private SortinParcelsUserRepository sortinParcelsUserRepository;
 
-    public SortinParcelsUserDetailService(SortinParcelsUserRepository sortinParcelsUserRepository) {
+    public SortinParcelsUserDetailsService(SortinParcelsUserRepository sortinParcelsUserRepository) {
         this.sortinParcelsUserRepository = sortinParcelsUserRepository;
     }
 
@@ -25,6 +25,6 @@ public class SortinParcelsUserDetailService implements UserDetailsService {
                 .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException
                         ("User not found: " + username));
-        return new SortinParcelsUserDetails(SortinParcelUser);
+        return new SortinParcelsSecurityUser(SortinParcelUser);
     }
 }

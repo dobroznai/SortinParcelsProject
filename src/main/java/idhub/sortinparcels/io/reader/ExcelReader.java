@@ -1,6 +1,6 @@
-package idhub.sortinparcels.service;
+package idhub.sortinparcels.io.reader;
 
-import idhub.sortinparcels.dto.ParcelExcelDto;
+import idhub.sortinparcels.dto.ParcelReaderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExcelService {
+public class ExcelReader implements DataReader {
 
     /**
      * Reads the given Excel file and converts each row into ParcelExcelDto.
@@ -23,8 +23,9 @@ public class ExcelService {
      * @param file uploaded Excel file (.xlsx/.xls)
      * @return list of parsed DTOs
      */
-    public List<ParcelExcelDto> parseExcel(MultipartFile file) {
-        List<ParcelExcelDto> inputList = new ArrayList<>();
+    @Override
+    public List<ParcelReaderDto> read(MultipartFile file) {
+        List<ParcelReaderDto> inputList = new ArrayList<>();
 
         try (InputStream is = file.getInputStream();
              Workbook workbook = WorkbookFactory.create(is)) {
@@ -54,16 +55,16 @@ public class ExcelService {
                 }
 
 
-                inputList.add(new ParcelExcelDto(
+                inputList.add(new ParcelReaderDto(
                         trackingNumber,
                         zoneCode,
                         routeNumber));
             }
 
             log.info("Parsed {} parcels from Excel", inputList.size());
-        } catch (Exception e) {
-            log.error("Failed to parse Excel file", e);
-            throw new RuntimeException("Error reading Excel file", e);
+        } catch (Exception exception) {
+            log.error("Failed to parse Excel file", exception);
+            throw new RuntimeException("Error reading Excel file", exception);
         }
 
         return inputList;
