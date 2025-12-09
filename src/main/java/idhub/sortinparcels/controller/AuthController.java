@@ -8,7 +8,10 @@ import idhub.sortinparcels.model.User;
 import idhub.sortinparcels.repository.SortinParcelsUserRepository;
 import idhub.sortinparcels.security.JwtService;
 import idhub.sortinparcels.security.SortinParcelsSecurityUser;
-import idhub.sortinparcels.service.SortinParcelsUserDetailService;
+import idhub.sortinparcels.service.user.SortinParcelsUserDetailsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,24 +23,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+@Tag(
+        name = "Authentication and User Management",
+        description = "Endpoints for user registration and authentication (User - Employee)")
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final SortinParcelsUserDetailService userDetailService;
+    private final SortinParcelsUserDetailsService userDetailService;
     private final JwtService jwtService;
     private final SortinParcelsUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
-    public AuthController(AuthenticationManager authenticationManager, SortinParcelsUserDetailService userDetailService, JwtService jwtService, SortinParcelsUserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailService = userDetailService;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -65,7 +66,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(User.Role.USER);
+        user.setRoleStatus(User.Role.USER);
 
         userRepository.save(user);
 

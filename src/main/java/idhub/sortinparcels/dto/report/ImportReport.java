@@ -1,4 +1,4 @@
-package idhub.sortinparcels.dto;
+package idhub.sortinparcels.dto.report;
 
 import lombok.Builder;
 import lombok.Data;

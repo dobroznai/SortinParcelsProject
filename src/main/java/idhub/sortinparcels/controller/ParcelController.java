@@ -1,11 +1,13 @@
 package idhub.sortinparcels.controller;
 
+import idhub.sortinparcels.dto.report.ImportReport;
 import idhub.sortinparcels.dto.ParcelReaderDto;
 import idhub.sortinparcels.dto.ScanResponse;
+import idhub.sortinparcels.io.reader.DataReader;
+import idhub.sortinparcels.io.reader.ReaderFactory;
 import idhub.sortinparcels.model.Parcel;
 import idhub.sortinparcels.enums.ParcelStatus;
 
-import idhub.sortinparcels.service.ExcelReader;
 import idhub.sortinparcels.service.ParcelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,20 +30,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParcelController {
 
-    private final ExcelReader excelReader;
+    private final ReaderFactory readerFactory;
     private final ParcelService parcelService;
 
-    @Operation(summary = "Upload parcels via Excel file",
-            description = "Uploads an Excel file containing parcels. Each row should contain trackingNumber, zoneCode, routeNumber")
+    @Operation(
+            summary = "Upload parcels from file",
+            description = """
+                Uploads a file containing parcel data. 
+                Supported formats:
+                - Excel (.xlsx, .xls)
+                - Text (.txt), each line: <trackingNumber> <zoneCode> <routeNumber>
+                
+                All records are validated. 
+                The response contains statistics: duplicates, invalid rows, saved parcels.
+                """
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "File uploaded successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid file format")
+            @ApiResponse(responseCode = "200", description = "File processed successfully"),
+            @ApiResponse(responseCode = "400", description = "Unsupported file type or validation error")
     })
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadParcels(@RequestParam("file") MultipartFile file) {
-        List<ParcelReaderDto> inputList = excelReader.read(file);
-        int importedCount = parcelService.importParcelsFromDto(inputList);
-        return ResponseEntity.ok("Successfully uploaded " + importedCount + " parcels");
+    public ResponseEntity<ImportReport> uploadParcels(@RequestParam("file") MultipartFile file) {
+
+        DataReader reader = readerFactory.getReader(file); // 🏭 Factory decides which reader to use
+        List<ParcelReaderDto> dtoList = reader.read(file);
+
+        ImportReport report = parcelService.importParcelsFromDto(dtoList);
+        return ResponseEntity.ok(report);
     }
 
     @Operation(summary = "Get all unscanned parcels (status=PENDING)")

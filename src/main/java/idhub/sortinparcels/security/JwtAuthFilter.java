@@ -1,7 +1,7 @@
 package idhub.sortinparcels.security;
 
 
-import idhub.sortinparcels.service.SortinParcelsUserDetailService;
+import idhub.sortinparcels.service.user.SortinParcelsUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,9 +19,9 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final SortinParcelsUserDetailService userDetailService;
+    private final SortinParcelsUserDetailsService userDetailService;
 
-    public JwtAuthFilter(JwtService jwtService, SortinParcelsUserDetailService userDetailService) {
+    public JwtAuthFilter(JwtService jwtService, SortinParcelsUserDetailsService userDetailService) {
         this.jwtService = jwtService;
         this.userDetailService = userDetailService;
     }

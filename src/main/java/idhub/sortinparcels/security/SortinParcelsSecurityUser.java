@@ -1,26 +1,24 @@
 package idhub.sortinparcels.security;
 
 import idhub.sortinparcels.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class SortinParcelsSecurityUser implements UserDetails {
     private final User user;
 
-    public SortinParcelsSecurityUser(User user) {
-        this.user = user;
-    }
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toSet());
     }
-
 
     @Override
     public String getUsername() {
@@ -31,9 +29,6 @@ public class SortinParcelsSecurityUser implements UserDetails {
     public String getPassword() {
         return user.getPassword();
     }
-
-
-
 
     @Override
     public boolean isEnabled() {

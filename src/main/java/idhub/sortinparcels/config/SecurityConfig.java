@@ -2,11 +2,14 @@ package idhub.sortinparcels.config;
 
 
 import idhub.sortinparcels.security.JwtAuthFilter;
-import idhub.sortinparcels.service.SortinParcelsUserDetailService;
+import idhub.sortinparcels.service.user.SortinParcelsUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,16 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-
     private final JwtAuthFilter jwtAuthFilter;
-    private final SortinParcelsUserDetailService userDetailService;
-
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, SortinParcelsUserDetailService userDetailService) {
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.userDetailService = userDetailService;
-    }
+    private final SortinParcelsUserDetailsService userDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,34 +33,53 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public DaoAuthenticationProvider authenticationProvider(SortinParcelsUserDetailsService sortinParcelsUserDetailsService) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(sortinParcelsUserDetailsService);
+        authProvider.setUserDetailsService(sortinParcelsUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           DaoAuthenticationProvider authenticationProvider)
+            throws Exception {
+        http.authenticationProvider(authenticationProvider);
 
         http.headers(headers -> headers
-                .frameOptions(frame -> frame.disable())
-        );
+                .frameOptions(frame -> frame.disable()));
 
         http.csrf(csrf -> csrf.disable())
-
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/public/info/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers(
+                                "/api/public/**",
+                                "/api/auth/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/h2-console/**",
+                                "/swagger-ui/**")
+                        .permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/parcels/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers(
+                                "/api/parcels/**",
+                                "/api/audit/**")
+                        .hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
-                );
+                )
 
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.httpBasic(Customizer.withDefaults());
+//        http.formLogin(Customizer.withDefaults());
+        http.logout(Customizer.withDefaults());
 
         return http.build();
     }
