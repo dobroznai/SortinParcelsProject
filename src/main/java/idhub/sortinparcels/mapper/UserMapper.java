@@ -1,7 +1,7 @@
 package idhub.sortinparcels.mapper;
 
-import idhub.sortinparcels.dto.users.UserAdminSummaryResponse;
-import idhub.sortinparcels.dto.users.UserRegistrationResponse;
+import idhub.sortinparcels.dto.user.UserAdminSummaryResponse;
+import idhub.sortinparcels.dto.user.UserRegistrationResponse;
 import idhub.sortinparcels.model.Role;
 import idhub.sortinparcels.model.User;
 import org.springframework.stereotype.Component;

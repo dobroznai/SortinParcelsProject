@@ -59,19 +59,37 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Auth endpoints
                         .requestMatchers(
-                                "/api/public/**",
-                                "/api/auth/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/h2-console/**",
-                                "/swagger-ui/**")
+                                "/api/auth/**")
                         .permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // Swagger + H2 free
                         .requestMatchers(
-                                "/api/parcels/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/h2-console/**")
+                        .permitAll()
+
+
+
+                        // Parcel operations
+                        .requestMatchers(
+                                "/api/parcels/**")
+                        .hasAnyRole("USER", "ADMIN")
+
+                        // User profile
+                        .requestMatchers(
+                                "/api/user/**")
+                        .hasRole("USER")
+
+                        // Admin abilities
+                        .requestMatchers(
+                                "/api/admin/**",
                                 "/api/audit/**")
-                        .hasAnyRole("ADMIN", "USER")
+                        .hasRole("ADMIN")
+
+                        // Everything else requires auth
                         .anyRequest().authenticated()
                 )
 

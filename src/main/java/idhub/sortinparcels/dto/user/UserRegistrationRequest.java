@@ -1,4 +1,4 @@
-package idhub.sortinparcels.dto.users;
+package idhub.sortinparcels.dto.user;
 
 public record UserRegistrationRequest(
         String username,

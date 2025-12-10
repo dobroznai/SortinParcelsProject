@@ -1,10 +1,10 @@
 package idhub.sortinparcels.service.user;
 
-import idhub.sortinparcels.dto.users.UserAdminCreationRequest;
-import idhub.sortinparcels.dto.users.UserAdminSummaryResponse;
-import idhub.sortinparcels.dto.users.UserRegistrationRequest;
-import idhub.sortinparcels.dto.users.UserRegistrationResponse;
-import idhub.sortinparcels.dto.users.UserRoleUpdateRequest;
+import idhub.sortinparcels.dto.user.UserAdminCreationRequest;
+import idhub.sortinparcels.dto.user.UserAdminSummaryResponse;
+import idhub.sortinparcels.dto.user.UserRegistrationRequest;
+import idhub.sortinparcels.dto.user.UserRegistrationResponse;
+import idhub.sortinparcels.dto.user.UserRoleUpdateRequest;
 import idhub.sortinparcels.enums.RoleStatus;
 import idhub.sortinparcels.mapper.UserMapper;
 import idhub.sortinparcels.model.Role;

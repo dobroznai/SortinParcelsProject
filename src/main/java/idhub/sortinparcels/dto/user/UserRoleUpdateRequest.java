@@ -1,4 +1,4 @@
-package idhub.sortinparcels.dto.users;
+package idhub.sortinparcels.dto.user;
 
 import java.util.Set;
 
