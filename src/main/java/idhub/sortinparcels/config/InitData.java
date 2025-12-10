@@ -18,7 +18,7 @@ public class InitData {
                                             PasswordEncoder encoder) {
         return args -> {
             if (repository.count() == 0) {
-                User user = new User("user", encoder.encode("user123"), Set.of(RoleStatus.ROLE_USER), true);
+                User user = new User("user", encoder.encode("user123"), Set.of(RoleStatus.ROLE_USER)), true);
                 User admin = new User("admin", encoder.encode("admin123"), Set.of(RoleStatus.ROLE_ADMIN), true);
 
                 repository.save(user);

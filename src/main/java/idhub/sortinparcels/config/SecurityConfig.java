@@ -74,8 +74,6 @@ public class SecurityConfig {
                                 "/h2-console/**")
                         .permitAll()
 
-
-
                         // Parcel operations
                         .requestMatchers(
                                 "/api/parcels/**")
