@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-
+@RequiredArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,11 +51,14 @@ public class User {
     public User(
             String username,
             String password,
-            Set<Role> roles) {
+            Set<Role> roles,
+            boolean enabled) {
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.enabled = enabled;
     }
 
 }
+
 

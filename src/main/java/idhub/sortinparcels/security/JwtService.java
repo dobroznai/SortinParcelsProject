@@ -1,79 +1,60 @@
 package idhub.sortinparcels.security;
 
-
-import idhub.sortinparcels.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-
-
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtService {
 
+    // використовуємо властивості з application.properties (jwt.secret і jwt.expirationMs)
+    // якщо хочеш, можна зробити їх final і явно вписати — але краще через props
+    private final long jwtExpirationMs;
+    private final SecretKey secretKey;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-
-    @Value("${jwt.expirationMs}")
-    private long jwtExpirationMs;
-
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    public JwtService(org.springframework.core.env.Environment env) {
+        String secret = env.getProperty("jwt.secret", "very-secret-key-for-sortinparcels-app-should-be-long");
+        this.jwtExpirationMs = Long.parseLong(env.getProperty("jwt.expirationMs", "3600000"));
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
-    // Генерація токена
-    public String generateToken(SortinParcelsSecurityUser userDetails) {
+
+    public String generateToken(UserDetails userDetails) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtExpirationMs);
-        User.Role role = userDetails.getRole();
-
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("role", role.name())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .signWith(getSigningKey(),  SignatureAlgorithm.HS256)
+                .signWith(secretKey) // jjwt сам підбирає алгоритм за ключем
                 .compact();
     }
 
-    // Парсинг claims Розкриває токен і повертає claims (дані всередині токена).
     private Claims parseClaims(String token) {
-
         return Jwts.parser()
-                .setSigningKey(getSigningKey())
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    // Витягнути username
     public String extractUsername(String token) {
         return parseClaims(token).getSubject();
     }
 
-    // Витягнути роль
-    public User.Role extractRole(String token) {
-        String role = parseClaims(token).get("role", String.class);
-        return User.Role.valueOf(role);
-    }
-
-    // Перевірка простроченого токена
     private boolean isTokenExpired(String token) {
         Date expiration = parseClaims(token).getExpiration();
         return expiration.before(new Date());
     }
 
-    // Перевірка валідності токена
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }
